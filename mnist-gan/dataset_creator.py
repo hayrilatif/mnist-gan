@@ -3,6 +3,7 @@ import tensorflow as tf
 
 from hyperparams import Params
 
+#Returns dataset.
 def get_dataset():
     data=tfds.load("mnist")
     train_data=data["train"]

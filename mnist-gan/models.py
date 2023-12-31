@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
+#Define a convolutional block that contains dropout and activation within it for ease of use.
 class Conv2DBlock(tf.keras.layers.Layer):
     def __init__(self,filter_count,filter_size,activation,dropout_rate):
         super(Conv2DBlock,self).__init__()
@@ -20,6 +21,7 @@ class Conv2DBlock(tf.keras.layers.Layer):
         dropo=self.dropo(act)
         return dropo
     
+#Define a transpose-convolutional block that contains dropout and activation within it for ease of use. This will used in up-sampling bundles.
 class TransposeConv2DBlock(tf.keras.layers.Layer):
     def __init__(self,filter_count,filter_size,activation,dropout_rate,strides):
         super(TransposeConv2DBlock,self).__init__()
@@ -39,7 +41,8 @@ class TransposeConv2DBlock(tf.keras.layers.Layer):
         act=self.act(conv)
         dropo=self.dropo(act)
         return dropo
-    
+
+#This defines the downsample part of the discriminator network.
 def downsample_bundle(filter_count,filter_size,activation,dropout_rate):
     def func(x):
         cb1=Conv2DBlock(filter_count,filter_size,activation,dropout_rate)(x)
@@ -48,6 +51,7 @@ def downsample_bundle(filter_count,filter_size,activation,dropout_rate):
         return pool1
     return func
 
+#This defines the upsample part of the generator network.
 def upsample_bundle(filter_count,filter_size,activation,dropout_rate,strides):
     def func(x):
         cb1=TransposeConv2DBlock(filter_count,filter_size,activation,dropout_rate,1)(x)
@@ -55,6 +59,7 @@ def upsample_bundle(filter_count,filter_size,activation,dropout_rate,strides):
         return cb2
     return func
 
+#Build discriminator model.
 def get_discriminator():
     inp=tf.keras.layers.Input((28,28,1))
     rs=tf.keras.layers.Resizing(32,32)(inp)
@@ -68,6 +73,7 @@ def get_discriminator():
     
     return tf.keras.models.Model(inp,flat)
 
+#Build generator model.
 def get_generator():
     inp=tf.keras.layers.Input((100))
     
@@ -84,9 +90,11 @@ def get_generator():
     
     return tf.keras.models.Model(inp,rs)
 
+#A method for generating data from normal distribution using generator model.
 def generate_sample(generator):
     return generator.predict(np.random.normal(size=(100))[np.newaxis,...])[0]
 
+#A method for adversarial training step.
 @tf.function()
 def train_step(x,discriminator,generator,loss_function,disc_opt,gen_opt,batchsize):
     with tf.GradientTape(persistent=True) as tape:

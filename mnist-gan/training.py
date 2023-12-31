@@ -5,12 +5,17 @@ from dataset_creator import get_dataset
 import tensorflow as tf
 
 
+#Define tensorflow optimizers for weight updates.
 optimizer_discriminator=tf.keras.optimizers.Adam(Params.discriminator_lr)
 optimizer_generator=tf.keras.optimizers.Adam(Params.generator_lr)
 
+#Get dataset.
 train_data=get_dataset()
 
+#Create generator and discriminator models.
 generator,discriminator=get_generator(),get_discriminator()
+
+#Define loss function.
 loss_f=tf.keras.losses.Hinge()
 
 disc_losses=[]
