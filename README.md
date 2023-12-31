@@ -1,2 +1,4 @@
 # mnist-gan
-Handwritten digits with MNIST distribution were generated with GAN.
+Some scripts for generating handwritten digits using simple GAN.
+
+Dataset: MNIST
