@@ -1,5 +1,5 @@
 # mnist-gan
-Some scripts for generating handwritten digits using simple GAN.
+Generating handwritten digit images using MNIST dataset using generative adversarial networks.
 
 Dataset:
 @article{lecun2010mnist,
